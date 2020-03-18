@@ -1,0 +1,9 @@
+
+{:source-paths ["src"]
+ :dependencies [[funcool/promesa "5.1.0"]]
+
+ :builds {:app {:target :node-script
+                :output-to "./server.js"
+                :main server.main/main!
+                :compiler-options {:output-feature-set :es-next}
+                :devtools {:after-load server.main/reload!}}}}

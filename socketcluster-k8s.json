@@ -1,0 +1,7 @@
+{
+  "docker": {
+    "imageRepo": "https://index.docker.io/v1/",
+    "imageName": "paul931224/paulhub-wss:v1.0.15",
+    "auth": "cGF1bDkzMTIyNDpoaXAtaG9wOTM="
+  }
+}
