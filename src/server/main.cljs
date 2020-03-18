@@ -96,13 +96,14 @@
                            (fn [middleware]
                                (async-iter-chan
                                  client-receive
-                                 middleware))))
+                                 middleware)))
+           (async/pipe client-receive wss-middleware-chan false))
 
 
 
       (async-iter-chan wss-connections-chan (.listener ag-server "connection"))
       (async-iter-chan http-chan (.listener http-server "request"))
-      (async/pipe client-receive wss-middleware-chan false)
+
 
 
       (.listen http-server socketcluster-port)

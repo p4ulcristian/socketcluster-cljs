@@ -4,3 +4,7 @@
 node_modules/
 
 yarn.lock
+
+.idea/
+
+.shadow-cljs/
