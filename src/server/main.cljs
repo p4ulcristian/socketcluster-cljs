@@ -4,7 +4,7 @@
             [cljs.core.async :as async :refer [<! >! put! chan timeout close!]]))
 
 
-;Requirements
+;Requires for node libraries
 (defonce http (nodejs/require "http"))
 (defonce eetase (nodejs/require "eetase"))
 (defonce socketcluster-server (nodejs/require "socketcluster-server"))
@@ -14,8 +14,12 @@
 (defonce morgan (nodejs/require "morgan"))
 (defonce scc-broker-client (nodejs/require "scc-broker-client"))
 (defonce http (nodejs/require "http"))
+
+;interop needed for these two
 (def process (js* "process"))
 (def __dirname (js* "__dirname"))
+
+;enviroment variables for socketcluster cluster
 (def enviroment  (or (-> process .-env .-ENV) "dev"))
 (def socketcluster-port  (or (-> process .-env .-SOCKETCLUSTER_PORT) 8000))
 (def socketcluster-ws-engine  (or (-> process .-env .-SOCKETCLUSTER_WS_ENGINE) "ws"))
@@ -34,6 +38,7 @@
 (def scc-state-server-reconnect-randomness (or (int (-> process .-env .-SCC_STATE_SERVER_RECONNECT_RANDOMNESS)) nil))
 (def scc-pub-sub-batch-duration (or (int (-> process .-env .-SCC_PUB_SUB_BATCH_DURATION)) nil))
 (def scc-broker-retry-delay (or (int (-> process .-env .-SCC_BROKER_RETRY_DELAY))  nil))
+
 (def ag-options {})
 
 (if (-> process .-env .-SOCKETCLUSTER_OPTIONS)
@@ -43,9 +48,13 @@
 
 (def http-server (eetase (.createServer http)))
 (def ag-server (.attach socketcluster-server http-server ag-options))
+
 (def express-app (express))
+;Missing morgan dev, later
 (. express-app (use (serve-static "public" #js {:index "index.html"})))
 
+
+;Beautiful interop between asyncIterable and core.async
 (defn async-iter-next
       [output iterator close? rejected]
       (when-let [elem-promise (.next iterator)]
@@ -72,18 +81,49 @@
       output)
 
 
+;Channels for handling events
 (def http-chan (async/chan))
 (def wss-connections-chan (async/chan))
 (def wss-event-chan (async/chan))
 (def wss-procedure-chan (async/chan))
 (def wss-channel-chan (async/chan))
 (def wss-middleware-chan (async/chan))
+(def wss-error-chan (async/chan))
 
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;SocketCluster/WebSocket connection handling loop.;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(if scc-state-server-host
+  (let [scc-client (.attach scc-broker-client
+                            (.brokerEngine ag-server)
+                            (clj->js {:instanceId scc-instance-id
+                                      :instancePort socketcluster-port
+                                      :instanceIp scc-instance-ip
+                                      :instanceIpFamily scc-instance-ip-family
+                                      :pubSubBatchDuration scc-pub-sub-batch-duration
+                                      :stateServerHost scc-state-server-host
+                                      :stateServerPort scc-state-server-port
+                                      :mappingEngine scc-mapping-engine
+                                      :clientPoolSize scc-client-pool-size
+                                      :authKey scc-auth-key
+                                      :stateServerConnectTimeout scc-state-server-connect-timeout
+                                      :stateServerAckTimeout scc-state-server-ack-timeout
+                                      :stateServerReconnectRandomness scc-state-server-reconnect-randomness
+                                      :brokerRetryDelay scc-broker-retry-delay}))]
+       (if (>= socketcluster-log-level 1)
+         (let [error-chan (async/chan)]
+              (async-iter-chan error-chan (.listener scc-client "error"))
+              (async/pipe error-chan wss-error-chan false)))))
+
+(go-loop [x 1]
+  (let [req-data (<! wss-error-chan)]
+       (.apply express-app  nil req-data)
+       (.log js/console "wss-error: ")
+       (recur (inc x))))
 
 (defn main! []
       (println ";;;;;;;;;;;;;;;;;;;")
