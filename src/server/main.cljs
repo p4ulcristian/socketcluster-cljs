@@ -88,29 +88,29 @@
 (defn main! []
       (println ";;;;;;;;;;;;;;;;;;;")
       (println ";;; App loaded! ;;;")
-      (println ";;;;;;;;;;;;;;;;;;;"
+      (println ";;;;;;;;;;;;;;;;;;;")
+
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;;;      Middleware listener        ;;;
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+      (.setMiddleware ag-server (.-MIDDLEWARE_INBOUND ag-server)
+                      (fn [middleware]
+                          (let [client-receive (async/chan)]
+                               (async-iter-chan
+                                 client-receive
+                                 middleware)
+                               (async/pipe client-receive wss-middleware-chan false))))
+      (.log js/console "sikeres hozzaadas")
 
 
 
-           (.setMiddleware ag-server (.-MIDDLEWARE_INBOUND ag-server)
-                           (fn [middleware]
-                               (let [client-receive (async/chan)]
-                                    (async-iter-chan
-                                      client-receive
-                                      middleware)
-                                    (async/pipe client-receive wss-middleware-chan false))))
-           (.log js/console "sikeres hozzaadas"))
-
-
-
+      ;;;      http and wss listener       ;;;
 
       (async-iter-chan wss-connections-chan (.listener ag-server "connection"))
       (async-iter-chan http-chan (.listener http-server "request"))
-
-
-
       (.listen http-server socketcluster-port)
-      ;(async-iter-chan wss-connections-chan (.listener ag-server "connection"))
+
       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       ;;;   Go loop for http connections  ;;;
       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -151,13 +151,6 @@
                     (.procedure (.-socket data) "simple-proc"))
                   (.-onClose data #(async/close! client-receive))
                   (async/pipe client-receive wss-procedure-chan false)))
-
-             ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-             ;;;      Middleware listener        ;;;
-             ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
 
         (recur (inc x)))
 
