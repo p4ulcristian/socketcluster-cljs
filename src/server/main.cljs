@@ -99,7 +99,7 @@
 
 (if scc-state-server-host
   (let [scc-client (.attach scc-broker-client
-                            (.brokerEngine ag-server)
+                            (.-brokerEngine ag-server)
                             (clj->js {:instanceId scc-instance-id
                                       :instancePort socketcluster-port
                                       :instanceIp scc-instance-ip

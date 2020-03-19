@@ -10,3 +10,5 @@ yarn.lock
 .shadow-cljs/
 
 server.js
+
+socketcluster-k8s.json
