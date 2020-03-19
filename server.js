@@ -10,7 +10,7 @@ try {require('source-map-support').install();} catch (e) {console.warn('no "sour
 
 global.CLOSURE_NO_DEPS = true;
 
-global.CLOSURE_DEFINES = {"goog.DEBUG":true,"goog.LOCALE":"en","goog.TRANSPILE":"never","goog.ENABLE_DEBUG_LOADER":false,"cljs.core._STAR_target_STAR_":"nodejs"};
+global.CLOSURE_DEFINES = {"shadow.cljs.devtools.client.env.repl_pprint":false,"shadow.cljs.devtools.client.env.reload_strategy":"optimized","shadow.cljs.devtools.client.env.devtools_url":"","shadow.cljs.devtools.client.env.autoload":true,"shadow.cljs.devtools.client.env.proc_id":"c61ad311-9ded-4536-b521-36962ca7e8ab","goog.ENABLE_DEBUG_LOADER":false,"shadow.cljs.devtools.client.env.server_port":9630,"shadow.cljs.devtools.client.env.use_document_host":true,"shadow.cljs.devtools.client.env.module_format":"goog","goog.LOCALE":"en","shadow.cljs.devtools.client.env.build_id":"app","shadow.cljs.devtools.client.env.ignore_warnings":false,"goog.DEBUG":true,"cljs.core._STAR_target_STAR_":"nodejs","shadow.cljs.devtools.client.env.ssl":false,"shadow.cljs.devtools.client.env.enabled":true,"shadow.cljs.devtools.client.env.server_host":"localhost","goog.TRANSPILE":"never"};
 
 var goog = global.goog = {};
 
@@ -2241,6 +2241,26 @@ SHADOW_IMPORT("goog.uri.utils.js");
 SHADOW_IMPORT("goog.uri.uri.js");
 SHADOW_IMPORT("goog.string.stringbuffer.js");
 SHADOW_IMPORT("cljs.core.js");
+SHADOW_IMPORT("clojure.walk.js");
+SHADOW_IMPORT("cljs.spec.gen.alpha.js");
+SHADOW_IMPORT("clojure.string.js");
+SHADOW_IMPORT("cljs.spec.alpha.js");
+SHADOW_IMPORT("goog.string.stringformat.js");
+SHADOW_IMPORT("cljs.repl.js");
+SHADOW_IMPORT("cljs.user.js");
+SHADOW_IMPORT("cljs.tools.reader.impl.utils.js");
+SHADOW_IMPORT("cljs.tools.reader.reader_types.js");
+SHADOW_IMPORT("cljs.tools.reader.impl.inspect.js");
+SHADOW_IMPORT("cljs.tools.reader.impl.errors.js");
+SHADOW_IMPORT("cljs.tools.reader.impl.commons.js");
+SHADOW_IMPORT("cljs.tools.reader.js");
+SHADOW_IMPORT("cljs.pprint.js");
+SHADOW_IMPORT("clojure.set.js");
+SHADOW_IMPORT("shadow.cljs.devtools.client.env.js");
+SHADOW_IMPORT("shadow.js.shim.module$ws.js");
+SHADOW_IMPORT("cljs.tools.reader.edn.js");
+SHADOW_IMPORT("cljs.reader.js");
+SHADOW_IMPORT("shadow.cljs.devtools.client.node.js");
 SHADOW_IMPORT("cljs.nodejs.js");
 SHADOW_IMPORT("cljs.core.async.impl.protocols.js");
 SHADOW_IMPORT("cljs.core.async.impl.buffers.js");

@@ -88,16 +88,19 @@
 (defn main! []
       (println ";;;;;;;;;;;;;;;;;;;")
       (println ";;; App loaded! ;;;")
-      (println ";;;;;;;;;;;;;;;;;;;")
+      (println ";;;;;;;;;;;;;;;;;;;"
 
 
-      (let [client-receive (async/chan)]
+
            (.setMiddleware ag-server (.-MIDDLEWARE_INBOUND ag-server)
                            (fn [middleware]
-                               (async-iter-chan
-                                 client-receive
-                                 middleware)))
-           (async/pipe client-receive wss-middleware-chan false))
+                               (let [client-receive (async/chan)]
+                                    (async-iter-chan
+                                      client-receive
+                                      middleware)
+                                    (async/pipe client-receive wss-middleware-chan false))))
+           (.log js/console "sikeres hozzaadas"))
+
 
 
 
