@@ -52,6 +52,10 @@
 (def express-app (express))
 ;Missing morgan dev, later
 (. express-app (use (serve-static "public" #js {:index "index.html"})))
+(. express-app (get "/health-check" (fn [req res]
+                                        (.send
+                                          (.status res 200)
+                                          "OK"))))
 
 
 ;Beautiful interop between asyncIterable and core.async

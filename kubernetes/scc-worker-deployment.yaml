@@ -55,7 +55,7 @@ spec:
       initContainers:
         -
           name: app-src-container
-          image: 'paul931224/paulhub-wss:v1.0.16'
+          image: 'paul931224/paulhub-wss:v1.0.19'
           volumeMounts:
             -
               mountPath: /usr/dest
