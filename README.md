@@ -1,4 +1,4 @@
-#cljs-socketcluster
+# cljs-socketcluster
 
 You can run `yarn shadow-cljs compile app` to make `server.js` in your directory.
 For testing type `yarn shadow-cljs watch app` and run `node server` in a separete terminal window.

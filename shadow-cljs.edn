@@ -1,9 +1,21 @@
 
 {:source-paths ["src"]
- :dependencies [[funcool/promesa "5.1.0"]]
+ :dependencies [[funcool/promesa "5.1.0"]
+                [reagent-utils "0.3.3"]
+                [pez/clerk "1.0.0"]
+                [metosin/reitit "0.3.7"]
+                [venantius/accountant "0.2.4"
+                 :exclusions [org.clojure/tools.reader]]
+                [reagent "0.9.1"]
+                [org.clojure/core.async "0.4.490"]]
 
- :builds {:app {:target :node-script
-                :output-to "./server.js"
-                :main server.main/main!
-                :compiler-options {:output-feature-set :es-next}
-                :devtools {:after-load server.main/reload!}}}}
+ :builds {:backend {:target :node-script
+                    :output-to "./server.js"
+                    :main server.core/main!
+                    :compiler-options {:output-feature-set :es-next}}
+          :frontend {:target :browser
+                     :output-to "./public/js/frontend.js"
+                     :modules {:frontend {:init-fn frontend.core/init}}
+                     :compiler-options {:output-feature-set :es-next}
+                     :devtools {:watch-dir "resources/public"
+                                :after-load frontend.core/mount-root}}}}
