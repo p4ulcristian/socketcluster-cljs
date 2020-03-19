@@ -51,7 +51,8 @@
 
 (def express-app (express))
 ;Missing morgan dev, later
-(. express-app (use (serve-static "public" #js {:index "index.html"})))
+
+(.use express-app (serve-static (.resolve path __dirname "public")))
 (. express-app (get "/health-check" (fn [req res]
                                         (.send
                                           (.status res 200)
