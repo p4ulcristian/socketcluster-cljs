@@ -67,10 +67,14 @@
 
        [:div.uk-flex.uk-flex-center
         [:button.uk-button-default.uk-button
-         {:on-click #(.transmit socket "simple-event" "hello test")}
+         {:on-click #(do
+                       (.log js/console "Transmit sent")
+                       (.transmit socket "simple-event" "hello test"))}
          "Transmit"]
         [:button.uk-button-default.uk-button
-         {:on-click #(async-iter-chan wss-procedure-chan (.invoke socket "simple-proc" "Hi browser"))}
+         {:on-click #(.then
+                       (.invoke socket "simple-proc" "Hi browser")
+                       (fn [a] (.log js/console a)))}
          "Procedure"]]])
 
 
